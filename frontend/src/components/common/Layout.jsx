@@ -34,9 +34,11 @@ const Layout = ({ children }) => {
           component="main"
           sx={{
             flex: 1,
+            minWidth: 0,
             backgroundColor: '#f5f5f5',
             p: { xs: 1, sm: 2, md: 3 },
-            overflow: 'auto',
+            overflowX: 'hidden',
+            overflowY: 'auto',
             mt: 8, // Account for fixed header
           }}
         >

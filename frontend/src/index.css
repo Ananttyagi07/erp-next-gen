@@ -7,6 +7,14 @@
 html, body, #root {
   width: 100%;
   height: 100%;
+  /* The page itself must never scroll horizontally on mobile — several
+     pages render MUI Grids/tables without their own bounded scroll
+     container, which was pushing the ENTIRE viewport wider than the
+     screen (the "desktop window on a phone" symptom). Individual wide
+     tables (react-data-table-component) already scroll internally, so
+     this only clips page-level overflow, not table content. */
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
