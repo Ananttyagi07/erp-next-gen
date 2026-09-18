@@ -65,8 +65,8 @@ export default function SchoolSelector() {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 1,
-            px: 1.5,
+            gap: { xs: 0.5, sm: 1 },
+            px: { xs: 1, sm: 1.5 },
             py: 0.75,
             cursor: 'pointer',
             border: '1px solid rgba(255,255,255,0.28)',
@@ -99,7 +99,7 @@ export default function SchoolSelector() {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                maxWidth: 160,
+                maxWidth: { xs: 90, sm: 160 },
               }}
             >
               {currentSchool ? currentSchool.name : 'Select branch'}

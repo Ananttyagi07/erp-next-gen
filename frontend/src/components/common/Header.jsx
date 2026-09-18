@@ -50,27 +50,45 @@ const Header = ({ onMenuClick }) => {
 
   return (
     <AppBar position="fixed" sx={{ zIndex: 1300, width: '100%' }}>
-      <Toolbar>
+      <Toolbar sx={{ flexWrap: 'nowrap', gap: { xs: 0.5, sm: 1 }, px: { xs: 1, sm: 2 } }}>
         {isMobile && (
           <IconButton
             color="inherit"
             onClick={onMenuClick}
-            sx={{ mr: 2 }}
+            sx={{ mr: { xs: 0.5, sm: 2 }, flexShrink: 0 }}
           >
             <MenuIcon />
           </IconButton>
         )}
 
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          component="div"
+          noWrap
+          sx={{
+            flexGrow: 1,
+            minWidth: 0,
+            fontSize: { xs: '0.95rem', sm: '1.25rem' },
+            display: { xs: 'none', sm: 'block' },
+          }}
+        >
           {t('university_management')}
         </Typography>
+        <Typography
+          variant="subtitle1"
+          component="div"
+          noWrap
+          sx={{ flexGrow: 1, minWidth: 0, display: { xs: 'block', sm: 'none' }, fontWeight: 700 }}
+        >
+          ERP
+        </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 0.5, sm: 2 }, minWidth: 0, flexShrink: 1 }}>
           <SchoolSelector />
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 2 }, flexShrink: 0 }}>
+          <Box sx={{ display: { xs: 'none', sm: 'flex' }, flexDirection: 'column', alignItems: 'flex-end', gap: 0.25 }}>
             <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
               {user?.primary_role?.name || 'User'}
             </Typography>
@@ -92,12 +110,12 @@ const Header = ({ onMenuClick }) => {
             <IconButton
               size="large"
               onClick={handleMenu}
-              sx={{ color: 'white' }}
+              sx={{ color: 'white', p: { xs: 0.5, sm: 1 } }}
             >
               <Avatar
                 sx={{
-                  width: 36,
-                  height: 36,
+                  width: { xs: 30, sm: 36 },
+                  height: { xs: 30, sm: 36 },
                   bgcolor: '#1976d2',
                   cursor: 'pointer',
                   border: '2px solid white'
