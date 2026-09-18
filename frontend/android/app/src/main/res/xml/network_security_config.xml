@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android blocks plaintext HTTP by default (API 28+). This demo build talks
+  to a Django dev server over plain HTTP on the local network, not HTTPS,
+  so cleartext is allowed ONLY for that specific LAN address — not
+  globally. Before any real deployment, the backend should be served over
+  HTTPS and this file removed along with the manifest's
+  usesCleartextTraffic flag.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">192.168.1.21</domain>
+    </domain-config>
+</network-security-config>

@@ -1,0 +1,164 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: erp_postgres
+    environment:
+      POSTGRES_USER: erp_user
+      POSTGRES_PASSWORD: erp_password
+      POSTGRES_DB: erp_university
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database_dumps:/database_dumps
+    ports:
+      - "55432:5432"
+    networks:
+      - erp_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp_user -d erp_university"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PgBouncer connection pooler — sits between Django and Postgres.
+  # Postgres's max_connections is 100; without pooling, every concurrent
+  # request opens its own DB connection and this gets exhausted well under
+  # 150 concurrent requests (verified: caused real "too many clients
+  # already" 500s). PgBouncer multiplexes many client connections onto a
+  # small pool of real Postgres connections.
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: erp_pgbouncer
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: erp_university
+      DB_USER: erp_user
+      DB_PASSWORD: erp_password
+      AUTH_TYPE: plain
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 2000
+      DEFAULT_POOL_SIZE: 40
+      ADMIN_USERS: erp_user
+    ports:
+      - "6432:5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: erp_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - erp_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Django Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: erp_backend
+    # gunicorn with real worker processes instead of Django's single-threaded
+    # dev server, which measurably fell over (500s, multi-second latency)
+    # well under 150 concurrent requests.
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --threads 4 --worker-class gthread --timeout 60 --access-logfile -
+    volumes:
+      - ./backend:/app:Z
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      # config/wsgi.py defaults to config.settings.prod (which forces
+      # SECURE_SSL_REDIRECT=True and crashed on LOGGING['handlers']['file']
+      # once that handler was removed from base.py). manage.py runserver
+      # never hit this because it defaults to dev.py separately, but
+      # gunicorn loads wsgi.py directly. Pin it explicitly.
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+      - DATABASE_NAME=erp_university
+      - DATABASE_USER=erp_user
+      - DATABASE_PASSWORD=erp_password
+      - DATABASE_HOST=pgbouncer
+      - DATABASE_PORT=5432
+      - SECONDARY_DB_NAME=erp_university
+      - SECONDARY_DB_USER=erp_user
+      - SECONDARY_DB_PASSWORD=erp_password
+      - SECONDARY_DB_HOST=pgbouncer
+      - SECONDARY_DB_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    depends_on:
+      pgbouncer:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      - erp_network
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: erp_celery_worker
+    command: celery -A config worker -l info
+    volumes:
+      - ./backend:/app:Z
+    environment:
+      - DATABASE_NAME=erp_university
+      - DATABASE_USER=erp_user
+      - DATABASE_PASSWORD=erp_password
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - erp_network
+
+  # Celery Beat (Scheduler)
+  celery_beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: erp_celery_beat
+    command: celery -A config beat -l info
+    volumes:
+      - ./backend:/app:Z
+    environment:
+      - DATABASE_NAME=erp_university
+      - DATABASE_USER=erp_user
+      - DATABASE_PASSWORD=erp_password
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - erp_network
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  erp_network:
+    driver: bridge

@@ -1,0 +1,198 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    FRONT OFFICE - SIMPLE INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ BOTH SERVERS ARE RUNNING:
+   - Frontend: http://localhost:5173/ ✅
+   - Backend: http://localhost:8000/ ✅
+
+═══════════════════════════════════════════════════════════════════════════════
+                              STEP-BY-STEP
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: OPEN YOUR BROWSER
+  → Go to http://localhost:5173/
+  → You should see the login page or dashboard
+
+STEP 2: LOGIN (IF NOT ALREADY LOGGED IN)
+  Email:    super.admin@erp.com
+  Password: Admin@123
+  → Click Login button
+  → Wait for dashboard to load
+
+STEP 3: FIND FRONT OFFICE IN SIDEBAR
+  → Look at the LEFT SIDE of your screen
+  → You'll see a vertical menu/sidebar
+  → Look for "Front Office" menu item
+  → It should be BELOW "Templates" menu
+  → If you can't see it, SCROLL DOWN in the sidebar
+
+STEP 4: CLICK FRONT OFFICE
+  → Click on "Front Office" menu item
+  → You should see a page with 5 TABS:
+    1. Visitor Purpose
+    2. Manage Visitor
+    3. Call Log
+    4. Postal Dispatch
+    5. Postal Receive
+
+STEP 5: TEST A MODULE
+  → Click on any tab (e.g., "Visitor Purpose")
+  → Click the "Add" button
+  → Fill in the form
+  → Click "Create" or "Submit"
+  → You should see the new record in the table
+
+═══════════════════════════════════════════════════════════════════════════════
+                           IF YOU CAN'T FIND IT
+═══════════════════════════════════════════════════════════════════════════════
+
+SOLUTION 1: Refresh the page
+  → Press Ctrl+R (Windows/Linux) or Cmd+R (Mac)
+  → Wait for page to reload
+  → Try again
+
+SOLUTION 2: Check sidebar
+  → Look for vertical menu on LEFT side
+  → If menu is collapsed, click the menu icon (≡) to expand
+  → Scroll DOWN to find "Front Office"
+  → It appears after "Templates"
+
+SOLUTION 3: Use Direct URL
+  → Type this in your browser address bar:
+    http://localhost:5173/front-office
+  → Press Enter
+  → Should go directly to Front Office page
+
+SOLUTION 4: Clear Cache
+  → Press Ctrl+Shift+Delete (Windows/Linux)
+     or Cmd+Shift+Delete (Mac)
+  → Select "All time"
+  → Click "Clear data"
+  → Refresh page and try again
+
+═══════════════════════════════════════════════════════════════════════════════
+                           WHAT YOU'LL SEE
+═══════════════════════════════════════════════════════════════════════════════
+
+Once on Front Office page, each tab shows:
+
+┌─────────────────────────────────────────────────────┐
+│  [Tab 1] [Tab 2] [Tab 3] [Tab 4] [Tab 5]           │
+├─────────────────────────────────────────────────────┤
+│                                                      │
+│  ┌──────────────────────────────────────────┐      │
+│  │ SEARCH BOX: [Search...]        [+ ADD]  │      │
+│  └──────────────────────────────────────────┘      │
+│                                                      │
+│  ┌──────────────────────────────────────────┐      │
+│  │ DATA TABLE                                │      │
+│  ├──────────────────────────────────────────┤      │
+│  │ Name      | Phone    | Purpose | Actions │      │
+│  ├──────────────────────────────────────────┤      │
+│  │ John Doe  | 123-4567 | Meeting | ✎ 🗑   │      │
+│  │ Jane Smith| 789-0123 | Inquiry | ✎ 🗑   │      │
+│  └──────────────────────────────────────────┘      │
+│                                                      │
+│  Previous [1] [2] [3] Next    Show 10 ▼ rows      │
+│                                                      │
+└─────────────────────────────────────────────────────┘
+
+Legend:
+  ✎ = Edit button
+  🗑 = Delete button
+  + ADD = Add new record button
+
+═══════════════════════════════════════════════════════════════════════════════
+                              QUICK TEST
+═══════════════════════════════════════════════════════════════════════════════
+
+TEST 1: Add Visitor Purpose
+  1. Click "Visitor Purpose" tab
+  2. Click "[+ Add Purpose]" button
+  3. Fill:
+     - Purpose Name: "Meeting"
+     - Description: "Business meeting"
+  4. Click "Create"
+  5. ✅ Should see "Meeting" appear in table
+
+TEST 2: Add Visitor
+  1. Click "Manage Visitor" tab
+  2. Click "[+ Add Visitor]" button
+  3. Fill required fields:
+     - Name: "John Doe"
+     - Phone: "9876543210"
+     - Purpose: Select from dropdown
+     - Meet Type: Select "Staff"
+  4. Click "Create"
+  5. ✅ Should see visitor in table
+
+TEST 3: Add Call Log
+  1. Click "Call Log" tab
+  2. Click "[+ Add Call Log]" button
+  3. Fill:
+     - Type: "Incoming"
+     - Name: "Jane Smith"
+     - Phone: "9876543211"
+     - Date: Today
+     - Duration: "300" (seconds)
+  4. Click "Create"
+  5. ✅ Should show "5m 0s" for duration
+
+═══════════════════════════════════════════════════════════════════════════════
+                         TROUBLESHOOTING QUICK FIXES
+═══════════════════════════════════════════════════════════════════════════════
+
+Problem: "Front Office not showing"
+→ Refresh page (Ctrl+R)
+→ Check if logged in
+→ Scroll down in sidebar
+
+Problem: "Can't click buttons"
+→ Check console for errors (F12)
+→ Refresh page
+→ Check backend is running
+
+Problem: "Forms won't save"
+→ Check backend is running
+→ Open F12 → Network tab
+→ Look for failed requests
+→ Check API errors
+
+Problem: "Can't login"
+→ Make sure backend running: http://localhost:8000/
+→ Check credentials: super.admin@erp.com / Admin@123
+→ Clear browser cache (Ctrl+Shift+Delete)
+
+═══════════════════════════════════════════════════════════════════════════════
+                            IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ BOTH SERVERS RUNNING:
+   → Frontend: npm run dev (already running)
+   → Backend: python manage.py runserver (already running)
+
+✅ YOU'RE LOGGED IN:
+   → Username: super.admin@erp.com
+   → Status: Authenticated with 32 permissions
+
+✅ EVERYTHING IS READY:
+   → All backend models created
+   → All API endpoints working
+   → All UI components built
+   → Navigation menu added
+   → Login issue FIXED
+
+═══════════════════════════════════════════════════════════════════════════════
+                           STATUS: READY TO USE
+═══════════════════════════════════════════════════════════════════════════════
+
+Just navigate to: http://localhost:5173/front-office
+
+Or:
+  1. Open http://localhost:5173/
+  2. Look for "Front Office" in sidebar
+  3. Click it
+  4. Start creating records!
+
+═══════════════════════════════════════════════════════════════════════════════
