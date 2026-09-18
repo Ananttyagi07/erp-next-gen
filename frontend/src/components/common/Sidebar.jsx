@@ -740,10 +740,17 @@ const Sidebar = ({ open, onClose }) => {
         onClose={onClose}
         sx={{
           display: { xs: 'block', sm: 'none' },
+          // Header/AppBar is forced to zIndex 1300 (see Header.jsx); without
+          // an explicit override here this Drawer falls back to MUI's
+          // default temporary-drawer zIndex (1200), which is BELOW the
+          // AppBar — the drawer was opening but rendering invisibly behind
+          // the fixed header. Must stay above 1300.
+          zIndex: 1400,
           '& .MuiDrawer-paper': {
             width: DRAWER_WIDTH,
             boxSizing: 'border-box',
             top: 56, // Height of AppBar on mobile
+            zIndex: 1400,
           },
         }}
       >
